@@ -1,7 +1,10 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 
 # SPDX-FileCopyrightText: © 2020 Georg Sauthoff <mail@gms.tf>
 # SPDX-License-Identifier: GPL-3.0-or-later
+
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 ANSIBLE_METADATA = {
     'metadata_version': '1.1',
@@ -99,6 +102,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible.utils.vars import merge_hash
 
 import subprocess
+import sys
 import tempfile
 import xml.etree.ElementTree as ET
 
@@ -114,7 +118,10 @@ def parse_dat(doc):
             continue
         k = e.get('name')
         if e:
-            v = ''.join(ET.tostring(x, encoding='unicode') for x in e)
+            if sys.version_info[0] < 3:
+                v = ''.join(ET.tostring(x) for x in e)
+            else:
+                v = ''.join(ET.tostring(x, encoding='unicode') for x in e)
         else:
             v = e.text
         h[k] = v

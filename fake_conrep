@@ -1,7 +1,10 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 
 # SPDX-FileCopyrightText: © 2020 Georg Sauthoff <mail@gms.tf>
 # SPDX-License-Identifier: GPL-3.0-or-later
+
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import argparse
 import sys
@@ -62,7 +65,12 @@ def parse_args():
 
 def test():
     d = ET.ElementTree(ET.fromstring(sample))
-    from library.conrep import parse_dat
+    if sys.version_info[0] < 3:
+        from os import path
+        sys.path.append(path.dirname(path.abspath(__file__)) + '/library')
+        from conrep import parse_dat
+    else:
+        from library.conrep import parse_dat
     h = parse_dat(d)
     for k, v in h.items():
         print('{}: {}'.format(k, v))
