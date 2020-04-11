@@ -29,25 +29,23 @@ options:
     conrep:
         description:
             - Conrep executable (name or absolute path)
-        required: false
+        default: conrep
     facts:
         description:
             - Return settings as facts
-        required: false
+        default: true
     hwdef:
         description:
             - Conrep hardware definition file
-        required: false
+        default: /opt/hp/hp-scripting-tools/etc/conrep.xml
     settings:
         description:
             - Dictionary of BIOS Settings. For available keys /Conrep/Section/@name values
               in a Conrep system configuration data dump. 
-        required: false
     settings_xml:
         description:
             - Raw Conrep setting XML as string. If specified takes precedence over
               the settings key.
-        required: false
 
 author:
     - Georg Sauthoff (@gsauthof)
