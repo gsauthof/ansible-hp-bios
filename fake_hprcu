@@ -1,0 +1,72 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+# SPDX-FileCopyrightText: © 2020 Georg Sauthoff <mail@gms.tf>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+from __future__ import absolute_import, division, print_function, unicode_literals
+
+import argparse
+import sys
+import xml.etree.ElementTree as ET
+
+# adopted from https://support.hpe.com/hpesc/public/docDisplay?docId=mmr_kc-0100799
+sample = '''<hprcu>
+    <informational>
+        <product_name>ProLiant BL460c Gen8</product_name>
+        <system_rom_family>I31</system_rom_family>
+        <system_rom_date>15/07/2012</system_rom_date>
+    </informational>
+    <feature feature_id='176' selected_option_id='2' default_option_id='1' feature_type='option'>
+        <feature_name>Intel(R) Hyperthreading Options</feature_name>
+        <option option_id='1'>
+            <option_name>Enabled</option_name>
+        </option>
+        <option option_id='2'>
+            <option_name>Disabled</option_name>
+        </option>
+    </feature>
+    <feature feature_id='100' feature_type='string'>
+        <feature_name>Server Name - Line 1</feature_name>
+        <feature_value>SERVERNAME</feature_value>
+    </feature>
+    <feature feature_id="212" selected_option_id="1" sys_default_option_id="1" feature_type="option">
+        <feature_name>Processor Power and Utilization Monitoring</feature_name>
+        <option option_id="1">
+            <option_name>Enabled</option_name>
+        </option>
+        <option option_id="2">
+            <option_name>Disabled</option_name>
+        </option>
+    </feature>
+</hprcu>'''
+
+def mk_arg_parser():
+    p = argparse.ArgumentParser(description='Mock HP conrep BIOS read/write settings tool')
+    p.add_argument('-a', dest='advanced', action='store_true',
+            help='hidden option to enable reading/writing of advanced options')
+    g = p.add_mutually_exclusive_group(required=True)
+    g.add_argument('-l', dest='write_bios', action='store_true',
+            help='write settings to BIOS from a file')
+    g.add_argument('-s', dest='write_bios', action='store_false',
+            help='read settings from BIOS and write them to a file')
+    p.add_argument('-f', dest='filename', default='hprcu.xml',
+            help='system configuration data file (default: %(default)s)')
+    return p
+
+def parse_args():
+    p = mk_arg_parser()
+    return p.parse_args()
+
+
+def main():
+    args = parse_args()
+    if args.write_bios:
+        d = ET.parse(args.filename)
+        print('Writing BIOS ... done')
+    else:
+        with open(args.filename, 'w') as f:
+            print(sample, file=f)
+
+if __name__ == '__main__':
+    sys.exit(main())
