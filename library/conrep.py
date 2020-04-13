@@ -181,7 +181,7 @@ def diff_settings(old_settings, settings):
         after.append('{} => {}'.format(k, v))
     before.append('')
     after.append('')
-    return '\n'.join(before), '\n'.join(after)
+    return { 'before': '\n'.join(before), 'after': '\n'.join(after) }
 
 def run_module():
     module_args = dict(
@@ -195,7 +195,6 @@ def run_module():
 
     result = dict(
         changed       = False,
-        diff          = dict(),
         ansible_facts = dict(),
     )
 
@@ -214,8 +213,8 @@ def run_module():
 
         check_settings(old_settings, settings)
         settings = filter_changed_settings(old_settings, settings)
-        result['diff']['before'], result['diff']['after'] = diff_settings(
-                old_settings, settings)
+        if module._diff:
+            result['diff'] = diff_settings(old_settings, settings)
 
         if settings:
             t = write_settings(module.params, settings, module.check_mode, debug)
