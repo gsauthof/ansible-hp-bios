@@ -111,7 +111,7 @@ class ConrepError(RuntimeError):
 def parse_dat(doc):
     r = doc.getroot()
     h = {}
-    for e in r.iter():
+    for e in r:
         if e.tag != 'Section':
             continue
         k = e.get('name')
