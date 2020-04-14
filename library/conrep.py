@@ -97,7 +97,6 @@ ansible_facts:
 '''
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.utils.vars import merge_hash
 
 import subprocess
 import sys
@@ -183,6 +182,11 @@ def diff_settings(old_settings, settings):
     after.append('')
     return { 'before': '\n'.join(before), 'after': '\n'.join(after) }
 
+def merge_dicts(xs, ys):
+    r = xs.copy()
+    r.update(ys)
+    return r
+
 def run_module():
     module_args = dict(
         conrep       = dict(type='str',  required=False, default='conrep'),
@@ -223,7 +227,7 @@ def run_module():
             result['changed'] = True
 
         if module.params['facts']:
-            result['ansible_facts']['conrep'] = merge_hash(old_settings, settings)
+            result['ansible_facts']['conrep'] = merge_dicts(old_settings, settings)
     except ConrepError as e:
         module.fail_json(msg = str(e), **result)
 
